@@ -1,0 +1,5 @@
+C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/lab10.dir
+C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/lab10_autogen_timestamp_deps.dir
+C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/lab10_autogen.dir
