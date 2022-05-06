@@ -58,22 +58,29 @@ private:
     QPushButton *btnSort = new QPushButton("&Sortare");
     QComboBox *cmbSort = new QComboBox;
 
+    QVBoxLayout *panelButtonsLayout;
+    std::vector<QPushButton*> buttons; // suprafete
+
     // constructor methods
     void initGUI(){
         QHBoxLayout *htable;
-        QWidget *panel1, *panel2;
+        QWidget *panel1, *panel2, *panelbuttons;
         QVBoxLayout *p1l, *p2l;
 
         // horizontal table
         htable = new QHBoxLayout;
         panel1 = new QWidget;
         panel2 = new QWidget;
+        panelbuttons = new QWidget;
         htable->addWidget(panel1);
         htable->addWidget(panel2);
+        htable->addWidget(panelbuttons);
         p1l = new QVBoxLayout(panel1);
         p2l = new QVBoxLayout(panel2);
+        panelButtonsLayout = new QVBoxLayout(panelbuttons);
         panel1->setLayout(p1l);
         panel2->setLayout(p2l);
+        panelbuttons->setLayout(panelButtonsLayout);
         setLayout(htable); /// !
 
         // panel 1
@@ -136,16 +143,47 @@ private:
         p2l->addLayout(notL3);
     }
 
+    bool vectorHasSuprafata(int suprafata)
+    {
+        for(const auto& widget : buttons)
+            if(widget->text() == QString::fromStdString(std::to_string(suprafata)))
+                return true;
+        return false;
+    }
+
     template<class T>
     void loadData(T& collection){
         lst->clear();
-        for(const auto& l : collection)
+        for(const auto& l : collection) {
             lst->addItem(QString::fromStdString(l.toString()));
+        }
+    }
+
+    void addButtons()
+    {
+        for(const auto& widget : buttons)
+            panelButtonsLayout->removeWidget(widget);
+        buttons.clear();
+        for(const auto& l : service)
+        {
+            int supr = l.getSuprafata();
+            if(!vectorHasSuprafata(supr))
+            {
+                QPushButton* btn = new QPushButton(QString::fromStdString(std::to_string(supr)));
+                Connect(btn, &QPushButton::clicked, [&, supr](){
+                    auto objs = service.filterSuprafata(supr);
+                    size_t dim = objs.size();
+                    MsgBox(QString::fromStdString("Numarul de apartamente cu aceasta suprafata este: "+std::to_string(dim)));
+                });
+                panelButtonsLayout->addWidget(btn);
+                buttons.push_back(btn);
+            }
+        }
     }
 
     void init_connect(){
         //butoane helper
-        Connect(btnShow, &QPushButton::clicked, [&](){loadData(service);});
+        Connect(btnShow, &QPushButton::clicked, [&](){loadData(service); addButtons();});
         Connect(btnClear, &QPushButton::clicked, [&](){
             Nr->setText("");
             Nume->setText("");
@@ -175,7 +213,7 @@ private:
             auto tip = Tip->text().toStdString();
             try {
                 service.add(numar, nume, sup, tip);
-                loadData(service);
+                loadData(service); addButtons();
             }
             catch(MyException& me) { MsgBox(me.what()); }
         });
@@ -186,7 +224,7 @@ private:
             auto tip = Tip->text().toStdString();
             try {
                 service.remove(numar, nume, sup, tip);
-                loadData(service);
+                loadData(service); addButtons();
             }
             catch(MyException& me) { MsgBox(me.what()); }
         });
@@ -197,7 +235,7 @@ private:
             auto tip = Tip->text().toStdString();
             try {
                 service.modify(numar, numar, nume, sup, tip);
-                loadData(service);
+                loadData(service); addButtons();
             }
             catch(MyException& me) { MsgBox(me.what()); }
         });
@@ -246,7 +284,7 @@ private:
         Connect(btnUndo, &QPushButton::clicked, [&](){
             try{
                 service.undo();
-                loadData(service);
+                loadData(service); addButtons();
             }
             catch(MyException& me) {QMessageBox::information(this, "Eroare", me.what());}
         });
@@ -267,7 +305,7 @@ private:
         });
         Connect(btnNotClear, &QPushButton::clicked, [&](){
             service.clearNotificari();
-            loadData(service);
+            loadData(service); addButtons();
             MsgBox("Lista de notificari a fost stearsa!");
         });
         Connect(btnNotGen, &QPushButton::clicked, [&](){
@@ -294,7 +332,7 @@ private:
 public:
     explicit GUI(Service& srv) : service{srv} {
         initGUI();
-        loadData(service);
+        loadData(service); addButtons();
         init_connect();
     }
 

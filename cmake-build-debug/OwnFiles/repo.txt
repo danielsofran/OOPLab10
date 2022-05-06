@@ -5,5 +5,5 @@
 5 Terrill 240 apartament
 6 Carlina 50 garsoniera
 16 Kiernan 190 apartament
-8 Marjan 100 apartament
 9 Marjan 100 apartament
+8 Marjan 100 apartament
