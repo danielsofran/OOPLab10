@@ -11,3 +11,4 @@ C:/Desktop/OOP/lab10cleu/tests.h
 C:/Desktop/OOP/lab10cleu/tests.cpp
 C:/Desktop/OOP/lab10cleu/validator.cpp
 C:/Desktop/OOP/lab10cleu/GUI.h
+C:/Desktop/OOP/lab10cleu/GUInotif.h

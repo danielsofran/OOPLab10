@@ -1,6 +1,7 @@
 lab10_autogen/timestamp: \
   ../CMakeLists.txt \
   ../GUI.h \
+  ../GUInotif.h \
   CMakeFiles/3.21.1/CMakeCXXCompiler.cmake \
   CMakeFiles/3.21.1/CMakeRCCompiler.cmake \
   CMakeFiles/3.21.1/CMakeSystem.cmake \

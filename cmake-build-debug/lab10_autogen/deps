@@ -1,6 +1,7 @@
 lab10_autogen/timestamp: \
 	C:/Desktop/OOP/lab10cleu/CMakeLists.txt \
 	C:/Desktop/OOP/lab10cleu/GUI.h \
+	C:/Desktop/OOP/lab10cleu/GUInotif.h \
 	C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/3.21.1/CMakeCXXCompiler.cmake \
 	C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/3.21.1/CMakeRCCompiler.cmake \
 	C:/Desktop/OOP/lab10cleu/cmake-build-debug/CMakeFiles/3.21.1/CMakeSystem.cmake \

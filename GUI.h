@@ -6,6 +6,7 @@
 #define LAB10_GUI_H
 
 #include "service.h"
+#include "GUInotif.h"
 
 #include <QtWidgets/qwidget.h>
 #include <QtWidgets/qboxlayout.h>
@@ -44,13 +45,6 @@ private:
     QPushButton *btnUndo = new QPushButton("&Undo");
 
     QPushButton *btnNotShow = new QPushButton("&Show notificari");
-    QPushButton *btnNotAdd = new QPushButton("&Adauga notificare");
-    QPushButton *btnNotGen = new QPushButton("&Genereaza notificari");
-    QSpinBox *spinBox = new QSpinBox;
-    QPushButton *btnNotClear = new QPushButton("&Sterge notificarile");
-    QPushButton *btnNotExportHTML = new QPushButton("&Exporta HTML");
-    QPushButton *btnNotExportCSV = new QPushButton("&Exporta CSV");
-    QLineEdit *Path = new QLineEdit;
 
     QPushButton *btnFilter = new QPushButton("&Filtrare");
     QComboBox *cmbFilter = new QComboBox;
@@ -60,6 +54,8 @@ private:
 
     QVBoxLayout *panelButtonsLayout;
     std::vector<QPushButton*> buttons; // suprafete
+
+    GUINotificari* guinot;
 
     // constructor methods
     void initGUI(){
@@ -127,20 +123,9 @@ private:
         //notificari
         auto *notL1 = new QHBoxLayout;
         notL1->addWidget(btnNotShow);
-        notL1->addWidget(btnNotAdd);
-        notL1->addWidget(btnNotClear);
         p2l->addLayout(notL1);
-        auto *notL2 = new QHBoxLayout;
-        notL2->addWidget(btnNotGen);
-        notL2->addWidget(spinBox);
-        p2l->addLayout(notL2);
-        auto *notL3 = new QHBoxLayout;
-        QLabel *lblPath = new QLabel("Nume fisier");
-        notL3->addWidget(lblPath);
-        notL3->addWidget(Path);
-        notL3->addWidget(btnNotExportHTML);
-        notL3->addWidget(btnNotExportCSV);
-        p2l->addLayout(notL3);
+
+        guinot = new GUINotificari(service);
     }
 
     bool vectorHasSuprafata(int suprafata)
@@ -291,41 +276,7 @@ private:
 
         //notificari
         Connect(btnNotShow, &QPushButton::clicked, [&](){
-            Locatari locatari = service.getNotificari();
-            loadData(locatari);
-        });
-        Connect(btnNotAdd, &QPushButton::clicked, [&](){
-            TypeApartament apartament = Nr->text().toInt();
-            try {
-                service.addNotificare(apartament);
-                Locatari loc = service.getNotificari();
-                loadData(loc);
-            }
-            catch(MyException& me) { MsgBox(me.what()); }
-        });
-        Connect(btnNotClear, &QPushButton::clicked, [&](){
-            service.clearNotificari();
-            loadData(service); addButtons();
-            MsgBox("Lista de notificari a fost stearsa!");
-        });
-        Connect(btnNotGen, &QPushButton::clicked, [&](){
-            int nr = spinBox->value();
-            try{
-                service.generateNotificari(nr);
-                Locatari loc = service.getNotificari();
-                loadData(loc);
-            }
-            catch(MyException& me) { MsgBox(me.what());}
-        });
-        Connect(btnNotExportHTML, &QPushButton::clicked, [&](){
-            string path = Path->text().toStdString();
-            service.exportNotificariHTML(path);
-            MsgBox("Export HTML cu succes!");
-        });
-        Connect(btnNotExportCSV, &QPushButton::clicked, [&](){
-            string path = Path->text().toStdString();
-            service.exportNotificariCSV(path);
-            MsgBox("Export CSV cu succes!");
+            guinot->show();
         });
     }
 
@@ -335,7 +286,6 @@ public:
         loadData(service); addButtons();
         init_connect();
     }
-
 };
 
 #endif //LAB10_GUI_H
