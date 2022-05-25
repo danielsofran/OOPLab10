@@ -13,6 +13,7 @@
 #include "validator.h"
 #include "repository.h"
 #include "service.h"
+#include "observer.h"
 
 class ITest{
 protected:
@@ -41,6 +42,26 @@ public:
         sort();
     }
     ITest()=default;
+};
+
+class TestObserver : public Observer{
+public:
+    int val = 0;
+    void update() override{
+        val = 1;
+    }
+};
+
+class TestObservable : public Observable{
+public:
+    TestObservable(){
+        TestObserver o[4];
+        for(auto & i : o)
+            addObserver(&i);
+        notify();
+        for(auto & i : o)
+            assert(i.val == 1);
+    }
 };
 
 void test();

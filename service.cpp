@@ -111,10 +111,12 @@ void Service::addNotificare(const int & nrap) {
     auto it = std::find_if(repository.begin(), repository.end(), [&nrap](const Locatar& l){return l.getApartament() == nrap; });
     if(it == repository.end()) throw ServiceException("Apartament inexistent!\n");
     listanotificare.push_back(*it);
+    notify();
 }
 
 void Service::clearNotificari() {
     listanotificare.clear();
+    notify();
 }
 
 void Service::generateNotificari(const int & nr) {
@@ -133,6 +135,7 @@ void Service::generateNotificari(const int & nr) {
         if(used.size() == repository.size())
             used.clear();
     }
+    notify();
 }
 
 void Service::exportNotificariHTML(const string& filename) {
@@ -161,7 +164,7 @@ void Service::exportNotificariHTML(const string& filename) {
     fout<<std::noskipws<<text;
     fout.close();
     fin.close();
-    system((R"(explorer "C:\Desktop\OOP\lab10cleu\cmake-build-debug\OwnFiles\)"+filename+".html\"").c_str());
+    //system((R"(explorer "C:\Desktop\OOP\lab10cleu\cmake-build-debug\OwnFiles\)"+filename+".html\"").c_str());
 }
 
 void Service::exportNotificariCSV(const string& filename) {

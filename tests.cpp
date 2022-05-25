@@ -443,5 +443,6 @@ void test()
     TestService().run();
     TestExceptions().run();
     TestValidator().run();
+    TestObservable t;
     std::cout<<"Tests done!\n";
 }

@@ -7,8 +7,10 @@
 
 #include "service.h"
 #include "GUInotif.h"
+#include "GUINotifReadOnly.h"
 
 #include <QtWidgets/qwidget.h>
+#include <QtWidgets/qtablewidget.h>
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qlistwidget.h>
 #include <QtWidgets/qformlayout.h>
@@ -28,7 +30,8 @@ class GUI : public QWidget{
 private:
     Service& service;
 
-    QListWidget *lst = new QListWidget;
+    //QListWidget *lst = new QListWidget;
+    QTableWidget* table = new QTableWidget(10, 4);
 
     QLineEdit *Nr = new QLineEdit;
     QLineEdit *Nume = new QLineEdit;
@@ -44,7 +47,13 @@ private:
     QPushButton *btnSearch = new QPushButton("&Cauta");
     QPushButton *btnUndo = new QPushButton("&Undo");
 
-    QPushButton *btnNotShow = new QPushButton("&Show notificari");
+    QPushButton *btnNotEdit = new QPushButton("&Editeaza notificari");
+    QPushButton *btnNotView = new QPushButton("&Vizualizeaza notificari");
+
+    QPushButton *btnNotAdd = new QPushButton("&Adauga notificare");
+    QPushButton *btnNotGen = new QPushButton("&Genereaza notificari");
+    QSpinBox *spinBox = new QSpinBox;
+    QPushButton *btnNotClear = new QPushButton("&Sterge notificarile");
 
     QPushButton *btnFilter = new QPushButton("&Filtrare");
     QComboBox *cmbFilter = new QComboBox;
@@ -54,8 +63,6 @@ private:
 
     QVBoxLayout *panelButtonsLayout;
     std::vector<QPushButton*> buttons; // suprafete
-
-    GUINotificari* guinot;
 
     // constructor methods
     void initGUI(){
@@ -80,7 +87,8 @@ private:
         setLayout(htable); /// !
 
         // panel 1
-        p1l->addWidget(lst);
+        //p1l->addWidget(lst);
+        p1l->addWidget(table);
         auto *buttonsL = new QHBoxLayout;
         buttonsL->addWidget(btnRemove);
         buttonsL->addWidget(btnShow);
@@ -122,10 +130,19 @@ private:
 
         //notificari
         auto *notL1 = new QHBoxLayout;
-        notL1->addWidget(btnNotShow);
+        notL1->addWidget(btnNotEdit);
+        notL1->addWidget(btnNotView);
+        auto *notL2 = new QHBoxLayout;
+        notL2->addWidget(btnNotAdd);
+        notL2->addWidget(btnNotClear);
+        auto *notL3 = new QHBoxLayout;
+        QLabel* lblgen = new QLabel("Genereaza:");
+        notL3->addWidget(lblgen);
+        notL3->addWidget(spinBox);
+        notL3->addWidget(btnNotGen);
+        p2l->addLayout(notL2);
+        p2l->addLayout(notL3);
         p2l->addLayout(notL1);
-
-        guinot = new GUINotificari(service);
     }
 
     bool vectorHasSuprafata(int suprafata)
@@ -138,16 +155,32 @@ private:
 
     template<class T>
     void loadData(T& collection){
-        lst->clear();
+        /*lst->clear();
         for(const auto& l : collection) {
             lst->addItem(QString::fromStdString(l.toString()));
+        }*/
+        int row = 0;
+        table->clearContents();
+        table->setRowCount(0);
+        for(const auto& l : collection)
+        {
+            auto cell1 = new QTableWidgetItem(std::to_string(l.getApartament()).c_str());
+            auto cell2 = new QTableWidgetItem(l.getNumeProprietar().c_str());
+            auto cell3 = new QTableWidgetItem(std::to_string(l.getSuprafata()).c_str());
+            auto cell4 = new QTableWidgetItem(l.getTip().c_str());
+            table->insertRow(row);
+            table->setItem(row, 0, cell1);
+            table->setItem(row, 1, cell2);
+            table->setItem(row, 2, cell3);
+            table->setItem(row, 3, cell4);
+            row++;
         }
     }
 
     void addButtons()
     {
-        for(const auto& widget : buttons)
-            panelButtonsLayout->removeWidget(widget);
+        for(auto& widget : buttons)
+            delete widget;
         buttons.clear();
         for(const auto& l : service)
         {
@@ -176,7 +209,7 @@ private:
             Tip->setText("");
         });
         // lista
-        Connect(lst, &QListWidget::itemSelectionChanged, [&](){
+        /*Connect(lst, &QListWidget::itemSelectionChanged, [&](){
             if (lst->selectedItems().isEmpty()) {
                 //daca nu e nimic selectat golesc campurile
                 btnClear->animateClick();
@@ -188,6 +221,14 @@ private:
             Nume->setText(QString::fromStdString(locatar.getNumeProprietar()));
             Suprafata->setText(QString::fromStdString(std::to_string(locatar.getSuprafata())));
             Tip->setText(QString::fromStdString(locatar.getTip()));
+        });*/
+        Connect(table, &QTableWidget::cellClicked, [&](int row, int col){
+            int nrap = table->item(row, 0)->text().toInt();
+            Locatar l = service.findApartament(nrap);
+            Nr->setText(std::to_string(l.getApartament()).c_str());
+            Nume->setText(l.getNumeProprietar().c_str());
+            Suprafata->setText(std::to_string(l.getSuprafata()).c_str());
+            Tip->setText(l.getTip().c_str());
         });
 
         //butoane CRUD
@@ -228,9 +269,18 @@ private:
             auto text = Search->text().toInt();
             try{
                 Locatar l = service.findApartament(text);
-                for(int i=0; i<lst->count();++i)
-                    if(lst->item(i)->text().toStdString() == l.toString())
-                        lst->setCurrentRow(i);
+                for(int i=0; i<table->rowCount();++i)
+                {
+                    int nrap = table->item(i, 0)->text().toInt();
+                    if(service.findApartament(nrap) == l) {
+                        table->setCurrentCell(i, 0);
+                        Nr->setText(std::to_string(l.getApartament()).c_str());
+                        Nume->setText(l.getNumeProprietar().c_str());
+                        Suprafata->setText(std::to_string(l.getSuprafata()).c_str());
+                        Tip->setText(l.getTip().c_str());
+                        break;
+                    }
+                }
             }
             catch(MyException& me) { MsgBox(me.what()); }
         });
@@ -246,6 +296,7 @@ private:
             else if(cmbFilter->currentText() == "Suprafata")
             {
                 Locatari locatari = service.filterSuprafata(text.toInt());
+                //MsgBox(std::to_string(locatari.size()).c_str());
                 loadData(locatari);
             }
         });
@@ -275,15 +326,40 @@ private:
         });
 
         //notificari
-        Connect(btnNotShow, &QPushButton::clicked, [&](){
-            guinot->show();
+        Connect(btnNotEdit, &QPushButton::clicked, [&](){
+            GUINotificari* gui = new GUINotificari(service);
+            gui->show();
+        });
+        Connect(btnNotView, &QPushButton::clicked, [&](){
+             GUINotifReadOnly* gui = new GUINotifReadOnly(service);
+             gui->show();
+        });
+
+        Connect(btnNotAdd, &QPushButton::clicked, [&](){
+            TypeApartament apartament = Nr->text().toInt();
+            try {
+                service.addNotificare(apartament);
+            }
+            catch(MyException& me) { MsgBox(me.what()); }
+        });
+        Connect(btnNotClear, &QPushButton::clicked, [&](){
+            service.clearNotificari();
+            MsgBox("Lista de notificari a fost stearsa!");
+        });
+        Connect(btnNotGen, &QPushButton::clicked, [&](){
+            int nr = spinBox->value();
+            try{
+                service.generateNotificari(nr);
+            }
+            catch(MyException& me) { MsgBox(me.what());}
         });
     }
 
 public:
     explicit GUI(Service& srv) : service{srv} {
         initGUI();
-        loadData(service); addButtons();
+        loadData(service);
+        addButtons();
         init_connect();
     }
 };

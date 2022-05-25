@@ -265,6 +265,12 @@
 			null
 		],
 		[
+			"C:/Desktop/OOP/lab10cleu/GUINotifReadOnly.h",
+			"MU",
+			"EWIEGA46WW/moc_GUINotifReadOnly.cpp",
+			null
+		],
+		[
 			"C:/Desktop/OOP/lab10cleu/GUInotif.h",
 			"MU",
 			"EWIEGA46WW/moc_GUInotif.cpp",
@@ -280,6 +286,12 @@
 			"C:/Desktop/OOP/lab10cleu/exceptions.h",
 			"MU",
 			"EWIEGA46WW/moc_exceptions.cpp",
+			null
+		],
+		[
+			"C:/Desktop/OOP/lab10cleu/observer.h",
+			"MU",
+			"EWIEGA46WW/moc_observer.cpp",
 			null
 		],
 		[

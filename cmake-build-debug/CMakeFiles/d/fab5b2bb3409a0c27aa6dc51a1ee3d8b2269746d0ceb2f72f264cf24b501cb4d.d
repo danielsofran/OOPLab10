@@ -1,6 +1,7 @@
 lab10_autogen/timestamp: \
   ../CMakeLists.txt \
   ../GUI.h \
+  ../GUINotifReadOnly.h \
   ../GUInotif.h \
   CMakeFiles/3.21.1/CMakeCXXCompiler.cmake \
   CMakeFiles/3.21.1/CMakeRCCompiler.cmake \
@@ -9,6 +10,7 @@ lab10_autogen/timestamp: \
   ../domain.h \
   ../exceptions.h \
   ../main.cpp \
+  ../observer.h \
   ../repository.h \
   ../service.cpp \
   ../service.h \

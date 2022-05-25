@@ -16,6 +16,7 @@
 #include "domain.h"
 #include "repository.h"
 #include "validator.h"
+#include "observer.h"
 
 using std::vector;
 using std::map;
@@ -52,7 +53,7 @@ public:
 
 
 
-class Service{
+class Service : public Observable{
     friend class TestService;
 private:
     Repository<Locatar>& repository;

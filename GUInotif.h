@@ -6,6 +6,7 @@
 #define LAB10_GUINOTIF_H
 
 #include "service.h"
+#include "observer.h"
 
 #include <QtWidgets/qwidget.h>
 #include <QtWidgets/qboxlayout.h>
@@ -23,7 +24,7 @@
 #define MsgBox(msg) QMessageBox::information(this, "Info", msg);
 using Locatari = std::vector<Locatar>;
 
-class GUINotificari : public QWidget{
+class GUINotificari : public QWidget, public Observer{
 private:
     Service& service;
 
@@ -100,6 +101,10 @@ private:
         }
     }
 
+    void update() override{
+        loadData(service.getNotificari());
+    }
+
     void init_connect(){
         // lista
         Connect(lst, &QListWidget::itemSelectionChanged, [&](){
@@ -164,6 +169,10 @@ public:
         initGUI();
         loadData(service.getNotificari());
         init_connect();
+        service.addObserver(this);
+    }
+    ~GUINotificari() override{
+        service.removeObserver(this);
     }
 };
 

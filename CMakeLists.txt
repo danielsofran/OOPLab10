@@ -16,7 +16,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        domain.cpp domain.h repository.h exceptions.h validator.cpp validator.h service.cpp service.h tests.cpp tests.h GUI.h GUInotif.h)
+        domain.cpp domain.h repository.h exceptions.h validator.cpp validator.h service.cpp service.h tests.cpp tests.h GUI.h GUInotif.h observer.h GUINotifReadOnly.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(lab10

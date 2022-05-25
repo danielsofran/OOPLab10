@@ -29,6 +29,8 @@ class RepoException : public MyException { using MyException::MyException;};
 class ServiceException : public MyException { using MyException::MyException;};
 class InvalidFieldException : public MyException { using MyException::MyException;};
 
+class NoObserverException : public MyException { using MyException::MyException;};
+
 class ValidatorException : public MyException {
 private:
     string sep="\n";
