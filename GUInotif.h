@@ -7,22 +7,7 @@
 
 #include "service.h"
 #include "observer.h"
-
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qlistwidget.h>
-#include <QtWidgets/qformlayout.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qlabel.h>
-#include <QtWidgets/qspinbox.h>
-#include <qmessagebox.h>
-#include <QtWidgets/qcombobox.h>
-#include <QTWidgets/qgridlayout.h>
-
-#define Connect QObject::connect
-#define MsgBox(msg) QMessageBox::information(this, "Info", msg);
-using Locatari = std::vector<Locatar>;
+#include "QTIncludes.h"
 
 class GUINotificari : public QWidget, public Observer{
 private:

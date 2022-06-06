@@ -190,4 +190,8 @@ map<TypeApartament, int> Service::raportApartamente() {
     return rez;
 }
 
+vector<Locatar> Service::getLocatari() {
+    return vector<Locatar>(repository.begin(), repository.end());
+}
+
 

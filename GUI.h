@@ -8,23 +8,9 @@
 #include "service.h"
 #include "GUInotif.h"
 #include "GUINotifReadOnly.h"
+#include "models.h"
 
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qtablewidget.h>
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qlistwidget.h>
-#include <QtWidgets/qformlayout.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qlabel.h>
-#include <QtWidgets/qspinbox.h>
-#include <qmessagebox.h>
-#include <QtWidgets/qcombobox.h>
-#include <QTWidgets/qgridlayout.h>
-
-#define Connect QObject::connect
-#define MsgBox(msg) QMessageBox::information(this, "Info", msg);
-using Locatari = std::vector<Locatar>;
+#include "QTIncludes.h"
 
 class GUI : public QWidget{
 private:
@@ -32,6 +18,8 @@ private:
 
     //QListWidget *lst = new QListWidget;
     QTableWidget* table = new QTableWidget(10, 4);
+    QTableView *tableview = new QTableView;
+    LocatarTableModel *model;
 
     QLineEdit *Nr = new QLineEdit;
     QLineEdit *Nume = new QLineEdit;
@@ -88,7 +76,12 @@ private:
 
         // panel 1
         //p1l->addWidget(lst);
-        p1l->addWidget(table);
+        //p1l->addWidget(table);
+        model = new LocatarTableModel;
+        model->setElems(service.getLocatari());
+        tableview->setModel(model);
+        p1l->addWidget(tableview);
+
         auto *buttonsL = new QHBoxLayout;
         buttonsL->addWidget(btnRemove);
         buttonsL->addWidget(btnShow);
@@ -155,11 +148,7 @@ private:
 
     template<class T>
     void loadData(T& collection){
-        /*lst->clear();
-        for(const auto& l : collection) {
-            lst->addItem(QString::fromStdString(l.toString()));
-        }*/
-        int row = 0;
+        /*int row = 0;
         table->clearContents();
         table->setRowCount(0);
         for(const auto& l : collection)
@@ -174,7 +163,9 @@ private:
             table->setItem(row, 2, cell3);
             table->setItem(row, 3, cell4);
             row++;
-        }
+        }*/
+        vector<Locatar> rez(collection.begin(), collection.end());
+        model->setElems(rez);
     }
 
     void addButtons()
@@ -225,6 +216,23 @@ private:
         Connect(table, &QTableWidget::cellClicked, [&](int row, int col){
             int nrap = table->item(row, 0)->text().toInt();
             Locatar l = service.findApartament(nrap);
+            Nr->setText(std::to_string(l.getApartament()).c_str());
+            Nume->setText(l.getNumeProprietar().c_str());
+            Suprafata->setText(std::to_string(l.getSuprafata()).c_str());
+            Tip->setText(l.getTip().c_str());
+        });
+        Connect(tableview->selectionModel(), &QItemSelectionModel::selectionChanged, [&](){
+            if(tableview->selectionModel()->selectedIndexes().isEmpty())
+            {
+                Nr->setText("");
+                Nume->setText("");
+                Suprafata->setText("");
+                Tip->setText("");
+                return;
+            }
+            auto selIndex = tableview->selectionModel()->selectedIndexes().at(0);
+            int nrap = selIndex.data(Qt::UserRole).toInt();
+            const auto& l = service.findApartament(nrap);
             Nr->setText(std::to_string(l.getApartament()).c_str());
             Nume->setText(l.getNumeProprietar().c_str());
             Suprafata->setText(std::to_string(l.getSuprafata()).c_str());

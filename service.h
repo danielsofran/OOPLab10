@@ -133,6 +133,8 @@ public:
 
     // lista de notificari
     const vector<Locatar>& getNotificari();
+
+    vector<Locatar> getLocatari();
 };
 
 #endif //LAB6_SERVICE_H
